@@ -223,3 +223,54 @@ volume.addEventListener("input", () => {
 document.getElementById("year").textContent = new Date().getFullYear();
 
 loadReleases();
+
+const terminalLines = document.getElementById("terminal-lines");
+
+if (terminalLines) {
+  const terminalOutput = [
+    "roy-b@aftercache:~$ boot --profile=instrumental",
+    "[ ok ] archive loaded: /releases/2026/",
+    "[cache] restoring nocturne.wav",
+    "[buffer] preview duration: 00:45",
+    "roy-b@aftercache:~$ ls ./memory/",
+    "dreams.tmp  static.log  window.cache  3am.session",
+    "[network] packet loss: 0.03%",
+    "[audio] warm_synth.service active",
+    "[ ok ] session restored",
+    "roy-b@aftercache:~$ play --quiet --loop",
+    "[signal] ambient channel online",
+    "[cache] artwork rendered",
+    "[process] cassette_noise.pid running",
+    "roy-b@aftercache:~$ archive --sync aftercache",
+    "[ ok ] low-light mode enabled",
+    "[buffer] no signal detected",
+    "roy-b@aftercache:~$ cd /late-night/",
+    "drums/  pads/  field-recordings/  unfinished/",
+    "[system] sleep disabled",
+    "[ ok ] listening mode active"
+  ];
+
+  const output = [
+    ...terminalOutput,
+    ...terminalOutput,
+    ...terminalOutput
+  ];
+
+  terminalLines.innerHTML = output
+    .map((line) => {
+      const safeLine = line
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+
+      if (safeLine.includes("roy-b@")) {
+        return `<span class="prompt">${safeLine}</span>`;
+      }
+
+      if (safeLine.includes("[ ok ]")) {
+        return `<span class="success">${safeLine}</span>`;
+      }
+
+      return safeLine;
+    })
+    .join("<br>");
+}
