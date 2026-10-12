@@ -75,6 +75,96 @@ img {
   text-transform: uppercase;
 }
 
+/* Background terminal — ROY-B palette */
+
+.terminal-bg {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(
+      circle at 18% 20%,
+      rgba(183, 161, 255, 0.09),
+      transparent 34%
+    ),
+    radial-gradient(
+      circle at 82% 78%,
+      rgba(126, 232, 196, 0.06),
+      transparent 30%
+    ),
+    #08080c;
+}
+
+.terminal-bg::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8, 8, 12, 0.82) 0%,
+      rgba(8, 8, 12, 0.64) 44%,
+      rgba(8, 8, 12, 0.9) 100%
+    );
+}
+
+.terminal-scanlines {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.018) 0 1px,
+    transparent 1px 4px
+  );
+  opacity: 0.45;
+}
+
+.terminal-lines {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  width: 100%;
+  color: rgba(183, 161, 255, 0.28);
+  font-family: "Courier New", Courier, monospace;
+  font-size: clamp(0.66rem, 1vw, 0.82rem);
+  line-height: 1.9;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 12px rgba(183, 161, 255, 0.16);
+  white-space: pre-wrap;
+  transform: translateY(-45%);
+  animation: terminal-scroll 38s linear infinite;
+}
+
+.terminal-lines .prompt {
+  color: rgba(126, 232, 196, 0.38);
+}
+
+.terminal-lines .success {
+  color: rgba(183, 161, 255, 0.34);
+}
+
+@keyframes terminal-scroll {
+  from {
+    transform: translateY(-45%);
+  }
+
+  to {
+    transform: translateY(-4%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terminal-lines {
+    animation: none;
+    transform: translateY(-16%);
+  }
+}
+
 /* Header */
 
 .site-header {
