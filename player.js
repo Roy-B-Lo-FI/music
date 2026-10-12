@@ -300,19 +300,75 @@ function renderTerminalLine(line) {
   return safeLine;
 }
 
-terminalColumns.forEach((column, index) => {
-  const lines = archTerminalLines[index % archTerminalLines.length];
+const terminalHost = document.getElementById("terminal-column-1");
 
-  const output = [
-    ...lines,
-    ...lines,
-    ...lines,
-    ...lines,
-    ...lines,
-    ...lines,
-    ...lines,
-    ...lines
-  ];
+if (terminalHost) {
+  const allLines = archTerminalLines.flat();
 
-  column.innerHTML = output.map(renderTerminalLine).join("<br>");
-});
+  const track = document.createElement("div");
+  track.className = "terminal-track";
+
+  const firstBlock = document.createElement("div");
+  firstBlock.className = "terminal-block";
+
+  track.appendChild(firstBlock);
+  terminalHost.replaceChildren(track);
+
+  function appendSequence() {
+    const fragment = document.createDocumentFragment();
+
+    allLines.forEach((line) => {
+      const row = document.createElement("div");
+      row.className = "terminal-row";
+      row.innerHTML = renderTerminalLine(line);
+      fragment.appendChild(row);
+    });
+
+    firstBlock.appendChild(fragment);
+  }
+
+  function buildInfiniteTerminal() {
+    track.style.animation = "none";
+    track.querySelectorAll(".terminal-block").forEach((block) => {
+      if (block !== firstBlock) {
+        block.remove();
+      }
+    });
+
+    firstBlock.replaceChildren();
+    appendSequence();
+
+    const minimumHeight = window.innerHeight + 200;
+
+    while (firstBlock.getBoundingClientRect().height < minimumHeight) {
+      appendSequence();
+    }
+
+    const secondBlock = firstBlock.cloneNode(true);
+    track.appendChild(secondBlock);
+
+    const blockHeight = firstBlock.getBoundingClientRect().height;
+    const pixelsPerSecond = 65;
+
+    track.style.setProperty(
+      "--terminal-duration",
+      `${blockHeight / pixelsPerSecond}s`
+    );
+
+    void track.offsetHeight;
+    track.style.animation = "";
+  }
+
+  const fontsReady = document.fonts
+    ? document.fonts.ready
+    : Promise.resolve();
+
+  fontsReady.then(buildInfiniteTerminal);
+
+  let resizeTimer;
+
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(buildInfiniteTerminal, 200);
+  });
+}
