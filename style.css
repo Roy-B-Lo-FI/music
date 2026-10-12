@@ -105,9 +105,9 @@ img {
   background:
     linear-gradient(
       180deg,
-      rgba(8, 8, 12, 0.28) 0%,
-      rgba(8, 8, 12, 0.12) 44%,
-      rgba(8, 8, 12, 0.38) 100%
+      rgba(8, 8, 12, 0.18) 0%,
+      rgba(8, 8, 12, 0.08) 44%,
+      rgba(8, 8, 12, 0.28) 100%
     );
 }
 
@@ -120,7 +120,7 @@ img {
     rgba(255, 255, 255, 0.018) 0 1px,
     transparent 1px 4px
   );
-  opacity: 0.25;
+  opacity: 0.2;
 }
 
 .terminal-lines {
@@ -129,24 +129,28 @@ img {
   left: 0;
   z-index: 1;
   width: 100%;
-  color: rgba(183, 161, 255, 0.78);
+  height: 200%;
+  padding-inline: clamp(20px, 4vw, 70px);
+  color: rgba(183, 161, 255, 0.88);
   font-family: "Courier New", Courier, monospace;
-  font-size: clamp(1.05rem, 2.4vw, 2rem);
-  line-height: 1.35;
+  font-size: clamp(1.1rem, 2.6vw, 2.2rem);
+  line-height: 1.25;
   letter-spacing: 0.02em;
-  text-shadow: 0 0 18px rgba(183, 161, 255, 0.5);
+  text-shadow: 0 0 20px rgba(183, 161, 255, 0.55);
   white-space: pre-wrap;
+  column-count: 3;
+  column-gap: clamp(24px, 4vw, 70px);
   transform: translateY(-45%);
-  animation: terminal-scroll 14s linear infinite;
+  animation: terminal-scroll 12s linear infinite;
 }
 
 .terminal-lines .prompt {
-  color: rgba(126, 232, 196, 0.78);
-  text-shadow: 0 0 16px rgba(126, 232, 196, 0.42);
+  color: rgba(126, 232, 196, 0.88);
+  text-shadow: 0 0 18px rgba(126, 232, 196, 0.48);
 }
 
 .terminal-lines .success {
-  color: rgba(183, 161, 255, 0.78);
+  color: rgba(183, 161, 255, 0.88);
 }
 
 @keyframes terminal-scroll {
@@ -156,6 +160,19 @@ img {
 
   to {
     transform: translateY(-4%);
+  }
+}
+
+@media (max-width: 1100px) {
+  .terminal-lines {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 700px) {
+  .terminal-lines {
+    column-count: 1;
+    font-size: clamp(0.95rem, 4vw, 1.35rem);
   }
 }
 
