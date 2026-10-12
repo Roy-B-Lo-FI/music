@@ -224,66 +224,95 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
 loadReleases();
 
-const terminalLines = document.getElementById("terminal-lines");
+const terminalColumns = [
+  document.getElementById("terminal-column-1"),
+  document.getElementById("terminal-column-2"),
+  document.getElementById("terminal-column-3"),
+  document.getElementById("terminal-column-4"),
+  document.getElementById("terminal-column-5")
+].filter(Boolean);
 
-if (terminalLines) {
-  const terminalOutput = [
+const archTerminalLines = [
+  [
     "roy-b@archlinux ~ $ sudo pacman -Syu",
     ":: Synchronizing package databases...",
     "core is up to date",
     "extra is up to date",
     ":: Starting full system upgrade...",
     "there is nothing to do",
-    "roy-b@archlinux ~ $ systemctl --user status pipewire",
-    "● pipewire.service - Multimedia Service",
-    "   Active: active (running)",
+    "roy-b@archlinux ~ $"
+  ],
+  [
     "roy-b@archlinux ~ $ neofetch --stdout",
     "OS: Arch Linux x86_64",
     "Kernel: 6.12.4-arch1-1",
     "Shell: zsh 5.9",
     "WM: Hyprland",
     "Terminal: kitty",
-    "CPU: AMD Ryzen 7 5800X",
-    "GPU: AMD Radeon RX 6700 XT",
-    "Memory: 3128MiB / 16384MiB",
-    "roy-b@archlinux ~ $ ls ~/Music",
-    "ambient/  lofi/  field-recordings/  unfinished/",
+    "roy-b@archlinux ~ $"
+  ],
+  [
+    "roy-b@archlinux ~ $ systemctl --user status pipewire",
+    "● pipewire.service - Multimedia Service",
+    "   Active: active (running)",
+    "roy-b@archlinux ~ $ wpctl status",
+    "Audio",
+    " ├─ Devices:",
+    " └─ Sinks:",
+    "roy-b@archlinux ~ $"
+  ],
+  [
+    "roy-b@archlinux ~ $ ls -lah ~/Music",
+    "drwxr-xr-x  ambient",
+    "drwxr-xr-x  field-recordings",
+    "drwxr-xr-x  lofi",
+    "drwxr-xr-x  unfinished",
     "roy-b@archlinux ~ $ ffprobe nocturne.wav",
     "Duration: 00:03:42.04",
-    "Stream: Audio: pcm_s16le, 44100 Hz, stereo",
-    "roy-b@archlinux ~ $ systemctl --user restart pipewire",
-    "roy-b@archlinux ~ $ pacman -Q | grep audio",
-    "pipewire 1:1.2.7-1",
-    "wireplumber 0.5.3-1",
-    "roy-b@archlinux ~ $ journalctl --user -b -g audio",
-    "oct 12 03:12:00 archlinux pipewire[1042]: server started",
-    "roy-b@archlinux ~ $ cmus --version",
-    "cmus v2.10.0",
+    "roy-b@archlinux ~ $"
+  ],
+  [
     "roy-b@archlinux ~ $ uptime",
-    " 03:12:00 up  4:21,  1 user,  load average: 0.42, 0.38, 0.31",
+    " 03:12:00 up 4:21, 1 user, load average: 0.42, 0.38, 0.31",
     "roy-b@archlinux ~ $ df -h /",
     "Filesystem      Size  Used Avail Use% Mounted on",
     "/dev/nvme0n1p2  931G  218G  666G  25% /",
-    "roy-b@archlinux ~ $ exit"
+    "roy-b@archlinux ~ $ journalctl --user -b -g pipewire",
+    "pipewire[1042]: server started",
+    "roy-b@archlinux ~ $"
+  ]
+];
+
+function renderTerminalLine(line) {
+  const safeLine = line
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+
+  if (safeLine.includes("roy-b@archlinux")) {
+    return `<span class="prompt">${safeLine}</span>`;
+  }
+
+  if (safeLine.includes("Active: active")) {
+    return `<span class="success">${safeLine}</span>`;
+  }
+
+  return safeLine;
+}
+
+terminalColumns.forEach((column, index) => {
+  const lines = archTerminalLines[index % archTerminalLines.length];
+
+  const output = [
+    ...lines,
+    ...lines,
+    ...lines,
+    ...lines,
+    ...lines,
+    ...lines,
+    ...lines,
+    ...lines
   ];
 
-  const output = Array.from({ length: 6 }, () => terminalOutput).flat();
-
-  terminalLines.innerHTML = output
-    .map((line) => {
-      const safeLine = line
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;");
-
-      if (safeLine.includes("roy-b@archlinux")) {
-        return `<span class="prompt">${safeLine}</span>`;
-      }
-
-      if (safeLine.includes("Active: active")) {
-        return `<span class="success">${safeLine}</span>`;
-      }
-
-      return safeLine;
-    })
-    .join("<br>");
-}
+  column.innerHTML = output.map(renderTerminalLine).join("<br>");
+});
