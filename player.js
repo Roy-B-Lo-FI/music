@@ -1,16 +1,195 @@
-let releases=[];let playlist=[];let currentIndex=-1;const PREVIEW_SECONDS=45;
-const audio=document.getElementById("audio");const releaseGrid=document.getElementById("release-grid");const playBtn=document.getElementById("playBtn");const prevBtn=document.getElementById("prevBtn");const nextBtn=document.getElementById("nextBtn");const seek=document.getElementById("seek");const volume=document.getElementById("volume");const playerTrack=document.getElementById("playerTrack");const playerRelease=document.getElementById("playerRelease");const playerCover=document.getElementById("playerCover");const currentTime=document.getElementById("currentTime");const duration=document.getElementById("duration");
-document.addEventListener("contextmenu",e=>{if(e.target.closest(".player-bar"))e.preventDefault()});
-function formatTime(s){if(!Number.isFinite(s))return"0:00";return`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,"0")}`}
-function loadReleases(){fetch("releases.json").then(r=>r.json()).then(d=>{releases=d;renderReleases()})}
-function renderReleases(){releaseGrid.innerHTML="";releases.forEach(release=>{const card=document.createElement("article");card.className="release";const cover=document.createElement("div");cover.className="cover";if(release.cover){const img=document.createElement("img");img.src=release.cover;img.alt=release.title;cover.appendChild(img)}else{cover.textContent=release.title}const info=document.createElement("div");info.className="release-info";const title=document.createElement("h3");title.className="release-title";title.textContent=release.title;const meta=document.createElement("p");meta.className="release-meta";meta.textContent=`${release.year} · ${release.genre||"instrumental"} · preview 45s`;info.append(title,meta);release.tracks.forEach(track=>{const button=document.createElement("button");button.className="track";button.innerHTML=`<span class="track-name">${track.title} <small class="preview-tag">preview 45s</small></span><span class="track-duration">▶</span>`;button.addEventListener("click",()=>{playlist=release.tracks.map(t=>({...t,release,cover:release.cover}));playTrack(release.tracks.findIndex(t=>t.file===track.file))});info.appendChild(button)});card.append(cover,info);releaseGrid.appendChild(card)})}
-function playTrack(index){if(index<0||index>=playlist.length)return;currentIndex=index;const track=playlist[index];audio.src=track.file;audio.currentTime=0;audio.play();playerTrack.textContent=`${track.title} — preview 45s`;playerRelease.textContent=track.release.title;playerCover.src=track.cover||"";document.querySelectorAll(".track").forEach((el,i)=>el.classList.toggle("active",i===currentIndex))}
-playBtn.addEventListener("click",()=>{if(currentIndex===-1&&playlist.length){playTrack(0);return}if(audio.paused){if(audio.currentTime>=PREVIEW_SECONDS)audio.currentTime=0;audio.play()}else audio.pause()});
-prevBtn.addEventListener("click",()=>playTrack(currentIndex-1));nextBtn.addEventListener("click",()=>playTrack(currentIndex+1));
-audio.addEventListener("play",()=>playBtn.textContent="⏸");audio.addEventListener("pause",()=>playBtn.textContent="▶");
-audio.addEventListener("timeupdate",()=>{if(audio.currentTime>=PREVIEW_SECONDS){audio.pause();audio.currentTime=PREVIEW_SECONDS;playBtn.textContent="▶";playerTrack.textContent=`${playlist[currentIndex].title} — preview terminata`;return}seek.value=(audio.currentTime/PREVIEW_SECONDS)*100||0;currentTime.textContent=formatTime(audio.currentTime)});
-audio.addEventListener("loadedmetadata",()=>duration.textContent="0:45");
-audio.addEventListener("ended",()=>{if(currentIndex+1<playlist.length)playTrack(currentIndex+1)});
-seek.addEventListener("input",()=>{const maxTime=Math.min(PREVIEW_SECONDS,audio.duration||PREVIEW_SECONDS);audio.currentTime=(seek.value/100)*maxTime});
-volume.addEventListener("input",()=>audio.volume=volume.value);
-document.getElementById("year").textContent=new Date().getFullYear();loadReleases();
+let releases = [];
+let playlist = [];
+let currentIndex = -1;
+const PREVIEW_SECONDS = 45;
+
+const audio = document.getElementById("audio");
+const releaseGrid = document.getElementById("release-grid");
+const playBtn = document.getElementById("playBtn");
+const prevBtn = document.getElementById("prevBtn");
+const nextBtn = document.getElementById("nextBtn");
+const seek = document.getElementById("seek");
+const volume = document.getElementById("volume");
+const playerTrack = document.getElementById("playerTrack");
+const playerRelease = document.getElementById("playerRelease");
+const playerCover = document.getElementById("playerCover");
+const currentTime = document.getElementById("currentTime");
+const duration = document.getElementById("duration");
+
+document.addEventListener("contextmenu", (event) => {
+  if (event.target.closest(".player-bar")) {
+    event.preventDefault();
+  }
+});
+
+function formatTime(seconds) {
+  if (!Number.isFinite(seconds)) return "0:00";
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes}:${String(remainingSeconds).padStart(2, "0")}`;
+}
+
+async function loadReleases() {
+  try {
+    const response = await fetch("releases.json");
+    if (!response.ok) throw new Error("releases.json non trovato");
+    releases = await response.json();
+    renderReleases();
+  } catch (error) {
+    releaseGrid.innerHTML = "<p class='load-error'>Impossibile caricare il catalogo. Controlla il file releases.json.</p>";
+  }
+}
+
+function renderReleases() {
+  releaseGrid.innerHTML = "";
+
+  releases.forEach((release) => {
+    const card = document.createElement("article");
+    card.className = "release";
+
+    const cover = document.createElement("div");
+    cover.className = "cover";
+
+    if (release.cover) {
+      const image = document.createElement("img");
+      image.src = release.cover;
+      image.alt = `Copertina di ${release.title}`;
+      image.loading = "lazy";
+      cover.appendChild(image);
+    } else {
+      cover.textContent = release.title;
+    }
+
+    const info = document.createElement("div");
+    info.className = "release-info";
+
+    const title = document.createElement("h3");
+    title.className = "release-title";
+    title.textContent = release.title;
+
+    const meta = document.createElement("p");
+    meta.className = "release-meta";
+    meta.textContent = `${release.year} · ${release.genre || "instrumental"} · preview 45s`;
+
+    info.append(title, meta);
+
+    release.tracks.forEach((track) => {
+      const button = document.createElement("button");
+      button.className = "track";
+      button.type = "button";
+      button.innerHTML = `
+        <span class="track-name">
+          ${track.title}
+          <small class="preview-tag">preview 45s</small>
+        </span>
+        <span class="track-duration">▶</span>
+      `;
+
+      button.addEventListener("click", () => {
+        playlist = release.tracks.map((item) => ({
+          ...item,
+          release,
+          cover: release.cover
+        }));
+
+        const trackIndex = release.tracks.findIndex(
+          (item) => item.file === track.file
+        );
+
+        playTrack(trackIndex);
+      });
+
+      info.appendChild(button);
+    });
+
+    card.append(cover, info);
+    releaseGrid.appendChild(card);
+  });
+}
+
+function playTrack(index) {
+  if (index < 0 || index >= playlist.length) return;
+
+  currentIndex = index;
+  const track = playlist[index];
+
+  audio.src = track.file;
+  audio.currentTime = 0;
+  audio.play().catch(() => {
+    playerTrack.textContent = "Tocca play per avviare la preview";
+  });
+
+  playerTrack.textContent = `${track.title} — preview 45s`;
+  playerRelease.textContent = track.release.title;
+  playerCover.src = track.cover || "";
+
+  document.querySelectorAll(".track").forEach((element, elementIndex) => {
+    element.classList.toggle("active", elementIndex === currentIndex);
+  });
+}
+
+playBtn.addEventListener("click", () => {
+  if (currentIndex === -1 && playlist.length) {
+    playTrack(0);
+    return;
+  }
+
+  if (audio.paused) {
+    if (audio.currentTime >= PREVIEW_SECONDS) {
+      audio.currentTime = 0;
+    }
+    audio.play();
+  } else {
+    audio.pause();
+  }
+});
+
+prevBtn.addEventListener("click", () => playTrack(currentIndex - 1));
+nextBtn.addEventListener("click", () => playTrack(currentIndex + 1));
+
+audio.addEventListener("play", () => {
+  playBtn.textContent = "⏸";
+});
+
+audio.addEventListener("pause", () => {
+  playBtn.textContent = "▶";
+});
+
+audio.addEventListener("timeupdate", () => {
+  if (audio.currentTime >= PREVIEW_SECONDS) {
+    audio.pause();
+    audio.currentTime = PREVIEW_SECONDS;
+    playBtn.textContent = "▶";
+    playerTrack.textContent = `${playlist[currentIndex].title} — preview terminata`;
+    return;
+  }
+
+  seek.value = (audio.currentTime / PREVIEW_SECONDS) * 100 || 0;
+  currentTime.textContent = formatTime(audio.currentTime);
+});
+
+audio.addEventListener("loadedmetadata", () => {
+  duration.textContent = "0:45";
+});
+
+audio.addEventListener("ended", () => {
+  if (currentIndex + 1 < playlist.length) {
+    playTrack(currentIndex + 1);
+  }
+});
+
+seek.addEventListener("input", () => {
+  const maxPreviewTime = Math.min(
+    PREVIEW_SECONDS,
+    audio.duration || PREVIEW_SECONDS
+  );
+
+  audio.currentTime = (seek.value / 100) * maxPreviewTime;
+});
+
+volume.addEventListener("input", () => {
+  audio.volume = volume.value;
+});
+
+document.getElementById("year").textContent = new Date().getFullYear();
+loadReleases();

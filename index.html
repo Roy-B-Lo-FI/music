@@ -1,105 +1,154 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ROY-B — Instrumentals</title>
-<meta name="description" content="Preview di strumentali lo-fi, ambient e bedroom rap di ROY-B.">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ROY-B — Instrumentals</title>
+  <meta name="description" content="Preview di strumentali lo-fi, ambient e bedroom rap di ROY-B.">
+  <meta name="theme-color" content="#0b0b0f">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <header class="site-header">
-  <div>
-    <p class="eyebrow">instrumentals / beats / late-night tapes</p>
-    <h1>ROY-B</h1>
-    <p class="tagline">lo-fi · ambient · bedroom producer · soundcloud rap</p>
+  <div class="header-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark">R</span>
+      <span class="brand-text">
+        <strong>ROY-B</strong>
+        <small>instrumentals</small>
+      </span>
+    </a>
+
+    <nav class="site-nav">
+      <a href="#releases">Releases</a>
+      <a href="#about">About</a>
+      <a href="#contact">Contatti</a>
+    </nav>
   </div>
-  <nav>
-    <a href="#releases">Releases</a>
-    <a href="#about">About</a>
-    <a href="#contact">Contact</a>
-  </nav>
 </header>
 
-<main>
+<main id="top">
   <section class="hero">
-    <div class="noise"></div>
-    <div class="hero-inner">
-      <h2>strumentali per notti lente,<br>finestre aperte e teste rumorose.</h2>
-      <p>Ascolta le preview di 45 secondi. Per versioni complete, leasing o collaborazioni scrivimi.</p>
+    <div class="noise" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <p class="eyebrow">lo-fi · ambient · bedroom producer · soundcloud rap</p>
+      <h1 class="hero-title">
+        Strumentali per notti lente,<br>
+        <span class="accent">finestre aperte</span> e teste rumorose.
+      </h1>
+      <p class="hero-text">
+        Ascolta le preview da 45 secondi. Per versioni complete, beat leasing
+        o collaborazioni scrivimi direttamente.
+      </p>
       <div class="hero-actions">
-        <a class="btn primary" href="#releases">Ascolta le preview</a>
-        <a class="btn ghost" href="#contact">Richiedi un beat</a>
+        <a class="btn btn-primary" href="#releases">Ascolta le preview</a>
+        <a class="btn btn-ghost" href="#contact">Richiedi un beat</a>
       </div>
     </div>
   </section>
 
   <section id="releases" class="section">
-    <div class="section-head">
-      <h2>Releases</h2>
-      <p>Ogni traccia è disponibile come preview di 45 secondi.</p>
-    </div>
-    <div id="release-grid" class="release-grid"></div>
-  </section>
+    <div class="container">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">catalogo</p>
+          <h2>Releases</h2>
+        </div>
+        <p class="section-note">
+          Ogni traccia è disponibile come preview di 45 secondi.
+        </p>
+      </div>
 
-  <section id="about" class="section about">
-    <div class="about-card">
-      <h2>About</h2>
-      <p>
-        ROY-B produce strumentali lo-fi, ambient, trap malinconica e rap da camera:
-        drum machine sporche, synth caldi, campioni respirati e basi pensate per
-        essere ascoltate di notte.
-      </p>
-      <p>
-        Le versioni complete sono disponibili su richiesta per artisti indipendenti,
-        collaborazioni, feature e progetti musicali.
-      </p>
+      <div id="release-grid" class="release-grid"></div>
     </div>
   </section>
 
-  <section id="contact" class="section contact">
-    <h2>Versione completa / Beat leasing</h2>
-    <div class="contact-links">
-      <a href="mailto:tuaemail@example.com">Email</a>
-      <a href="https://instagram.com/tuoprofilo" target="_blank" rel="noopener">Instagram</a>
-      <a href="https://soundcloud.com/tuoprofilo" target="_blank" rel="noopener">SoundCloud</a>
-      <a href="https://youtube.com/@tuoprofilo" target="_blank" rel="noopener">YouTube</a>
+  <section id="about" class="section section-alt">
+    <div class="container">
+      <div class="about-grid">
+        <div>
+          <p class="eyebrow">about</p>
+          <h2>Suono fatto in camera</h2>
+        </div>
+        <div class="about-copy">
+          <p>
+            ROY-B produce strumentali lo-fi, ambient, trap malinconica e rap da camera:
+            drum machine sporche, synth caldi, campioni respirati e basi pensate
+            per essere ascoltate di notte.
+          </p>
+          <p>
+            Le versioni complete sono disponibili su richiesta per artisti indipendenti,
+            collaborazioni, feature e progetti musicali.
+          </p>
+          <a class="btn btn-ghost" href="#contact">Contattami</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section">
+    <div class="container">
+      <div class="contact-card">
+        <div>
+          <p class="eyebrow">beat leasing</p>
+          <h2>Versione completa su richiesta</h2>
+          <p class="contact-text">
+            Scrivimi per ricevere la versione completa, informazioni sui diritti
+            d’uso o per proporre una collaborazione.
+          </p>
+        </div>
+
+        <div class="contact-links">
+          <a href="mailto:tuaemail@example.com">Email</a>
+          <a href="https://instagram.com/tuoprofilo" target="_blank" rel="noopener">Instagram</a>
+          <a href="https://soundcloud.com/tuoprofilo" target="_blank" rel="noopener">SoundCloud</a>
+          <a href="https://youtube.com/@tuoprofilo" target="_blank" rel="noopener">YouTube</a>
+        </div>
+      </div>
     </div>
   </section>
 </main>
 
 <div class="player-bar" id="playerBar">
-  <div class="now-playing">
-    <img id="playerCover" src="" alt="">
-    <div>
-      <span id="playerTrack">Nessuna preview selezionata</span>
-      <small id="playerRelease"></small>
+  <div class="player-inner">
+    <div class="now-playing">
+      <img id="playerCover" src="" alt="">
+      <div class="now-playing-text">
+        <span id="playerTrack">Nessuna preview selezionata</span>
+        <small id="playerRelease"></small>
+      </div>
     </div>
-  </div>
 
-  <div class="player-controls">
-    <button id="prevBtn" aria-label="Preview precedente">⏮</button>
-    <button id="playBtn" aria-label="Play / pausa">▶</button>
-    <button id="nextBtn" aria-label="Preview successiva">⏭</button>
-  </div>
+    <div class="player-controls">
+      <button id="prevBtn" aria-label="Preview precedente">⏮</button>
+      <button id="playBtn" aria-label="Play o pausa">▶</button>
+      <button id="nextBtn" aria-label="Preview successiva">⏭</button>
+    </div>
 
-  <div class="progress-area">
-    <span id="currentTime">0:00</span>
-    <input type="range" id="seek" value="0" min="0" max="100" step="0.1">
-    <span id="duration">0:45</span>
-  </div>
+    <div class="progress-area">
+      <span id="currentTime">0:00</span>
+      <input type="range" id="seek" value="0" min="0" max="100" step="0.1" aria-label="Avanzamento preview">
+      <span id="duration">0:45</span>
+    </div>
 
-  <div class="volume-area">
-    <span>🔈</span>
-    <input type="range" id="volume" min="0" max="1" step="0.01" value="0.85">
+    <div class="volume-area">
+      <span aria-hidden="true">🔈</span>
+      <input type="range" id="volume" min="0" max="1" step="0.01" value="0.85" aria-label="Volume">
+    </div>
   </div>
 
   <audio id="audio" preload="metadata" controlslist="nodownload noplaybackrate" oncontextmenu="return false;"></audio>
 </div>
 
-<footer>
-  <p>© <span id="year"></span> ROY-B — le preview sono protette da copyright. Versioni complete su richiesta.</p>
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© <span id="year"></span> ROY-B — Tutte le preview sono protette da copyright.</p>
+    <p class="footer-note">Versioni complete disponibili su richiesta.</p>
+  </div>
 </footer>
 
 <script src="player.js"></script>
