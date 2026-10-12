@@ -1,0 +1,38 @@
+[
+  {
+    "title": "Notte Statica",
+    "year": 2026,
+    "genre": "lo-fi / ambient rap",
+    "cover": "assets/covers/notte-statica.jpg",
+    "tracks": [
+      {
+        "title": "Finestre Aperte",
+        "file": "assets/audio/finestre-aperte.mp3"
+      },
+      {
+        "title": "Segnale Perso",
+        "file": "assets/audio/segnale-perso.mp3"
+      },
+      {
+        "title": "Cassette nel Cassetto",
+        "file": "assets/audio/cassette-nel-cassetto.mp3"
+      }
+    ]
+  },
+  {
+    "title": "Camera 3AM",
+    "year": 2026,
+    "genre": "bedroom producer / sad trap",
+    "cover": "assets/covers/camera-3am.jpg",
+    "tracks": [
+      {
+        "title": "Luci Spente",
+        "file": "assets/audio/luci-spente.mp3"
+      },
+      {
+        "title": "Rumore Bianco",
+        "file": "assets/audio/rumore-bianco.mp3"
+      }
+    ]
+  }
+]
