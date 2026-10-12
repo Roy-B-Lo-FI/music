@@ -250,11 +250,7 @@ if (terminalLines) {
     "[ ok ] listening mode active"
   ];
 
-  const output = [
-    ...terminalOutput,
-    ...terminalOutput,
-    ...terminalOutput
-  ];
+  const output = Array.from({ length: 8 }, () => terminalOutput).flat();
 
   terminalLines.innerHTML = output
     .map((line) => {
