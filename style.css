@@ -80,7 +80,7 @@ img {
 .terminal-bg {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  z-index: 0;
   overflow: hidden;
   pointer-events: none;
   background:
@@ -95,6 +95,14 @@ img {
       transparent 34%
     ),
     #08080c;
+}
+
+.site-header,
+main,
+.site-footer,
+.player-bar {
+  position: relative;
+  z-index: 1;
 }
 
 .terminal-bg::before {
