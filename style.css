@@ -2103,3 +2103,9 @@ input[type="range"]:focus-visible {
 .hero {
   border-bottom: none;
 }
+
+/* Avvicina il catalogo alla sezione hero */
+
+#releases.section {
+  padding-top: clamp(28px, 4vw, 48px);
+}
