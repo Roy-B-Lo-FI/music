@@ -2098,3 +2098,8 @@ input[type="range"]:focus-visible {
 .about-copy {
   background: rgba(19, 15, 29, 0.96);
 }
+
+/* Rimuove la linea sotto la sezione iniziale */
+.hero {
+  border-bottom: none;
+}
