@@ -899,7 +899,7 @@ input[type="range"]::-moz-range-thumb {
   transform: translate(-50%, -50%);
   overflow: hidden;
   font-family: "Courier New", Courier, monospace;
-  text-align: left;
+  text-align: center;
 }
 
 /* Colori del terminale unico */
