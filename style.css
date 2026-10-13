@@ -2116,3 +2116,71 @@ input[type="range"]:focus-visible {
   border-top: none;
   border-bottom: none;
 }
+
+/* Pulsante fisso: torna all'inizio */
+
+.back-to-top {
+  position: fixed;
+  right: 28px;
+  bottom: 112px;
+  z-index: 40;
+  display: grid;
+  width: 48px;
+  height: 48px;
+  place-items: center;
+  border: 1px solid rgba(190, 170, 255, 0.55);
+  border-radius: 50%;
+  background: rgba(18, 14, 28, 0.96);
+  color: #e9e1ff;
+  box-shadow:
+    0 8px 24px rgba(0, 0, 0, 0.4),
+    0 0 18px rgba(190, 170, 255, 0.12);
+  font-size: 1.4rem;
+  font-weight: 700;
+  line-height: 1;
+  text-decoration: none;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.back-to-top:hover {
+  border-color: #d8ccff;
+  background: #beaaff;
+  color: #171020;
+  transform: translateY(-4px);
+}
+
+.back-to-top:active {
+  transform: translateY(-1px);
+}
+
+.back-to-top:focus-visible {
+  outline: 3px solid #91ebcc;
+  outline-offset: 4px;
+}
+
+@media (max-width: 640px) {
+  .back-to-top {
+    right: 18px;
+    bottom: 192px;
+    width: 44px;
+    height: 44px;
+    font-size: 1.25rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .back-to-top {
+    transition: none;
+  }
+
+  .back-to-top:hover,
+  .back-to-top:active {
+    transform: none;
+  }
+}
