@@ -486,3 +486,89 @@ if (terminalHost) {
     resizeTimer = setTimeout(buildInfiniteTerminal, 200);
   });
 }
+
+const prefersReducedMotion = window.matchMedia(
+  "(prefers-reduced-motion: reduce)"
+);
+
+const glitchCharacters = ["#", "%", "@", "▓", "/", "?", "+", "×"];
+
+function scrambleTerminalText(text) {
+  const characters = [...text];
+
+  if (characters.length < 5) {
+    return text;
+  }
+
+  const changes = Math.max(1, Math.floor(characters.length * 0.08));
+
+  for (let index = 0; index < changes; index += 1) {
+    const position = Math.floor(Math.random() * characters.length);
+
+    if (characters[position] !== " ") {
+      characters[position] =
+        glitchCharacters[
+          Math.floor(Math.random() * glitchCharacters.length)
+        ];
+    }
+  }
+
+  return characters.join("");
+}
+
+function triggerTerminalGlitch() {
+  if (prefersReducedMotion.matches || !terminalHost) {
+    return;
+  }
+
+  const rows = [...terminalHost.querySelectorAll(".terminal-row")].filter(
+    (row) => row.textContent.trim().length > 8
+  );
+
+  if (!rows.length) {
+    scheduleTerminalGlitch();
+    return;
+  }
+
+  const rowCount = Math.min(
+    rows.length,
+    Math.floor(Math.random() * 4) + 2
+  );
+
+  const selectedRows = [...rows]
+    .sort(() => Math.random() - 0.5)
+    .slice(0, rowCount);
+
+  selectedRows.forEach((row) => {
+    const originalMarkup = row.innerHTML;
+    const originalText = row.textContent;
+
+    row.dataset.glitchOriginal = originalMarkup;
+    row.classList.add("is-glitching");
+
+    if (Math.random() > 0.35) {
+      row.textContent = scrambleTerminalText(originalText);
+    }
+
+    window.setTimeout(() => {
+      row.innerHTML = row.dataset.glitchOriginal || originalMarkup;
+      delete row.dataset.glitchOriginal;
+      row.classList.remove("is-glitching");
+    }, 180 + Math.random() * 360);
+  });
+
+  scheduleTerminalGlitch();
+}
+
+function scheduleTerminalGlitch() {
+  if (prefersReducedMotion.matches) {
+    return;
+  }
+
+  const delay = 7000 + Math.random() * 9000;
+  window.setTimeout(triggerTerminalGlitch, delay);
+}
+
+if (!prefersReducedMotion.matches) {
+  scheduleTerminalGlitch();
+}
