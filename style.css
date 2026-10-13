@@ -962,3 +962,106 @@ input[type="range"]::-moz-range-thumb {
     display: none;
   }
 }
+
+/* Glitch dell'intero sfondo */
+
+.terminal-bg.is-glitching {
+  animation: background-glitch 0.45s steps(2, end) both;
+}
+
+.terminal-bg.is-glitching::after {
+  content: "";
+  position: absolute;
+  inset: -8%;
+  z-index: 4;
+  pointer-events: none;
+  background:
+    linear-gradient(
+      105deg,
+      transparent 0 12%,
+      rgba(183, 161, 255, 0.16) 12% 26%,
+      transparent 26% 48%,
+      rgba(126, 232, 196, 0.14) 48% 63%,
+      transparent 63% 100%
+    ),
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.05) 0 2px,
+      transparent 2px 7px
+    );
+  mix-blend-mode: screen;
+  animation: background-glitch-overlay 0.45s steps(2, end) both;
+}
+
+@keyframes background-glitch {
+  0%,
+  100% {
+    filter: none;
+    transform: translate3d(0, 0, 0);
+  }
+
+  12% {
+    filter: hue-rotate(25deg) contrast(1.2) saturate(1.25);
+    transform: translate3d(-10px, 3px, 0) skewX(-1.5deg);
+  }
+
+  28% {
+    filter: hue-rotate(-30deg) contrast(1.35) brightness(1.08);
+    transform: translate3d(9px, -4px, 0) skewX(1.5deg);
+  }
+
+  46% {
+    filter: blur(0.6px) contrast(1.15);
+    transform: translate3d(-5px, 2px, 0);
+  }
+
+  68% {
+    filter: hue-rotate(15deg) saturate(1.2);
+    transform: translate3d(6px, -2px, 0) skewX(-1deg);
+  }
+
+  86% {
+    filter: none;
+    transform: translate3d(-2px, 1px, 0);
+  }
+}
+
+@keyframes background-glitch-overlay {
+  0%,
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+
+  12% {
+    opacity: 0.75;
+    transform: translate3d(-24px, 8px, 0) scaleY(1.02);
+  }
+
+  28% {
+    opacity: 0.55;
+    transform: translate3d(22px, -10px, 0) scaleY(0.98);
+  }
+
+  46% {
+    opacity: 0.85;
+    transform: translate3d(-12px, 4px, 0);
+  }
+
+  68% {
+    opacity: 0.4;
+    transform: translate3d(14px, -5px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terminal-bg.is-glitching,
+  .terminal-bg.is-glitching::after {
+    animation: none;
+    transform: none;
+  }
+
+  .terminal-bg.is-glitching::after {
+    display: none;
+  }
+}
