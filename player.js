@@ -565,7 +565,7 @@ function scheduleTerminalGlitch() {
     return;
   }
 
-  const delay = 1800 + Math.random() * 3200;
+  const delay = 1500 + Math.random() * 2700;
   window.setTimeout(triggerTerminalGlitch, delay);
 }
 
