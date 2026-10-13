@@ -898,3 +898,19 @@ input[type="range"]::-moz-range-thumb {
   font-family: "Courier New", Courier, monospace;
   text-align: left;
 }
+
+/* Colori del terminale unico */
+
+.terminal-grid #terminal-column-1 {
+  color: rgba(183, 161, 255, 0.65);
+  text-shadow: 0 0 12px rgba(183, 161, 255, 0.22);
+}
+
+.terminal-row .prompt {
+  color: rgba(126, 232, 196, 0.78);
+  text-shadow: 0 0 12px rgba(126, 232, 196, 0.24);
+}
+
+.terminal-row .success {
+  color: rgba(183, 161, 255, 0.82);
+}
