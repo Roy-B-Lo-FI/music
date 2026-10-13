@@ -2008,3 +2008,93 @@ input[type="range"]:focus-visible {
     transform: none;
   }
 }
+
+/* ==========================================================
+   ROY-B — Ripristina il terminale mantenendo la UI leggibile
+   ========================================================== */
+
+/* Elimina l'attenuazione generale delle scritte */
+
+.terminal-grid {
+  opacity: 1;
+}
+
+/* Viola leggibile, senza un alone troppo forte */
+
+.terminal-grid #terminal-column-1 {
+  color: rgba(190, 170, 255, 0.72);
+  text-shadow:
+    0 0 8px rgba(190, 170, 255, 0.14),
+    0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Prompt verde ben riconoscibile */
+
+.terminal-row .prompt {
+  color: rgba(145, 235, 204, 0.85);
+  text-shadow:
+    0 0 8px rgba(145, 235, 204, 0.16),
+    0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.terminal-row .success {
+  color: rgba(210, 194, 255, 0.86);
+}
+
+/* Velo globale molto più leggero */
+
+.terminal-bg::before {
+  background: linear-gradient(
+    180deg,
+    rgba(8, 8, 12, 0.10) 0%,
+    rgba(8, 8, 12, 0.03) 48%,
+    rgba(8, 8, 12, 0.15) 100%
+  );
+}
+
+/* Riduce la schermatura della hero:
+   il terminale torna visibile anche al centro */
+
+.hero::before {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(10, 9, 17, 0.48) 0%,
+    rgba(10, 9, 17, 0.32) 35%,
+    rgba(10, 9, 17, 0.10) 70%,
+    transparent 100%
+  );
+}
+
+/* Il titolo resta distinto dalle righe del terminale */
+
+.hero-title {
+  text-shadow:
+    0 2px 4px #08080c,
+    0 0 16px rgba(8, 8, 12, 0.95),
+    0 0 32px rgba(8, 8, 12, 0.85);
+}
+
+/* Le sezioni non oscurano più tutto lo sfondo:
+   restano opachi solo i pannelli dei contenuti */
+
+.section {
+  background: rgba(9, 8, 15, 0.14);
+}
+
+.section-alt {
+  background: rgba(15, 12, 23, 0.28);
+}
+
+/* Mantiene protetti i testi piccoli e le azioni */
+
+.hero-text {
+  background: rgba(14, 12, 22, 0.94);
+}
+
+.section-head {
+  background: rgba(15, 12, 23, 0.96);
+}
+
+.about-copy {
+  background: rgba(19, 15, 29, 0.96);
+}
