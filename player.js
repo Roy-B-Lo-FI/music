@@ -17,6 +17,7 @@ const playerRelease = document.getElementById("playerRelease");
 const playerCover = document.getElementById("playerCover");
 const currentTime = document.getElementById("currentTime");
 const duration = document.getElementById("duration");
+const terminalHost = document.getElementById("terminal-column-1");
 
 document.addEventListener("contextmenu", (event) => {
   if (event.target.closest(".player-bar")) {
@@ -45,14 +46,14 @@ async function loadReleases() {
 
     releases = await response.json();
     renderReleases();
-  } catch (error) {
+  } catch {
     releaseGrid.innerHTML =
       "<p class='load-error'>Impossibile caricare il catalogo. Controlla il file releases.json.</p>";
   }
 }
 
 function renderReleases() {
-  releaseGrid.innerHTML = "";
+  releaseGrid.replaceChildren();
 
   releases.forEach((release) => {
     const card = document.createElement("article");
@@ -66,7 +67,6 @@ function renderReleases() {
       image.src = release.cover;
       image.alt = `Copertina di ${release.title}`;
       image.loading = "lazy";
-
       cover.appendChild(image);
     } else {
       cover.textContent = release.title;
@@ -87,9 +87,8 @@ function renderReleases() {
 
     info.append(title, meta);
 
-    release.tracks.forEach((track) => {
+    release.tracks.forEach((track, trackIndex) => {
       const button = document.createElement("button");
-
       button.className = "track";
       button.type = "button";
 
@@ -108,10 +107,6 @@ function renderReleases() {
           cover: release.cover
         }));
 
-        const trackIndex = release.tracks.findIndex(
-          (item) => item.file === track.file
-        );
-
         playTrack(trackIndex);
       });
 
@@ -123,6 +118,22 @@ function renderReleases() {
   });
 }
 
+function updateTrackButtons() {
+  document.querySelectorAll(".track").forEach((button) => {
+    const trackTitle = button.querySelector(".track-name")?.childNodes[0]
+      ?.textContent?.trim();
+
+    button.classList.toggle(
+      "active",
+      Boolean(
+        currentIndex >= 0 &&
+          playlist[currentIndex] &&
+          trackTitle === playlist[currentIndex].title
+      )
+    );
+  });
+}
+
 function playTrack(index) {
   if (index < 0 || index >= playlist.length) {
     return;
@@ -130,10 +141,9 @@ function playTrack(index) {
 
   currentIndex = index;
 
-  const track = playlist[index];
+  const track = playlist[currentIndex];
 
   playerBar.classList.add("has-track");
-
   audio.src = track.file;
   audio.currentTime = 0;
 
@@ -141,18 +151,19 @@ function playTrack(index) {
   playerRelease.textContent = track.release.title;
   playerCover.src = track.cover || "";
 
+  updateTrackButtons();
+
   audio.play().catch(() => {
     playerTrack.textContent = "Tocca play per avviare la preview";
-  });
-
-  document.querySelectorAll(".track").forEach((element, elementIndex) => {
-    element.classList.toggle("active", elementIndex === currentIndex);
   });
 }
 
 playBtn.addEventListener("click", () => {
-  if (currentIndex === -1 && playlist.length) {
-    playTrack(0);
+  if (currentIndex === -1) {
+    if (playlist.length) {
+      playTrack(0);
+    }
+
     return;
   }
 
@@ -188,7 +199,9 @@ audio.addEventListener("timeupdate", () => {
     audio.pause();
     audio.currentTime = PREVIEW_SECONDS;
 
-    playerTrack.textContent = `${playlist[currentIndex].title} — preview terminata`;
+    if (playlist[currentIndex]) {
+      playerTrack.textContent = `${playlist[currentIndex].title} — preview terminata`;
+    }
 
     return;
   }
@@ -224,274 +237,44 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
 loadReleases();
 
-const terminalColumns = [
-  document.getElementById("terminal-column-1"),
-  document.getElementById("terminal-column-2"),
-  document.getElementById("terminal-column-3"),
-  document.getElementById("terminal-column-4"),
-  document.getElementById("terminal-column-5")
-].filter(Boolean);
-
-const archTerminalLines = [
-  [
-    "roy-b@archlinux ~ $ fastfetch --logo archlinux --structure Title:OS:Kernel:Uptime:Packages:Shell:WM:Terminal:CPU:GPU:Memory",
-    "roy-b@archlinux",
-    "--------------",
-    "OS: Arch Linux x86_64",
-    "Kernel: 6.12.4-arch1-1",
-    "Uptime: 4 hours, 21 mins",
-    "Packages: 1187 (pacman)",
-    "Shell: zsh 5.9",
-    "WM: Hyprland",
-    "Terminal: kitty 0.37.0",
-    "CPU: AMD Ryzen 7 5800X (16) @ 3.80 GHz",
-    "GPU: AMD Radeon RX 6700 XT",
-    "Memory: 3128MiB / 16384MiB",
-    "",
-    "roy-b@archlinux ~ $"
-  ],
-  [
-    "roy-b@archlinux ~ $ sudo pacman -Syu",
-    ":: Synchronizing package databases...",
-    " core downloading...",
-    " extra downloading...",
-    " multilib downloading...",
-    ":: Starting full system upgrade...",
-    "resolving dependencies...",
-    "looking for conflicting packages...",
-    "",
-    "Packages (4) pipewire-1:1.2.7-1  wireplumber-0.5.3-1",
-    "             linux-6.12.4.arch1-1  linux-firmware-20241210-1",
-    "",
-    "Total Installed Size:  428.55 MiB",
-    "Net Upgrade Size:        0.00 MiB",
-    "",
-    ":: Proceed with installation? [Y/n] y",
-    ":: Processing package changes...",
-    "(1/4) upgrading pipewire",
-    "(2/4) upgrading wireplumber",
-    "(3/4) upgrading linux",
-    "(4/4) upgrading linux-firmware",
-    ":: Running post-transaction hooks...",
-    "(1/5) Updating module dependencies...",
-    "(2/5) Arming ConditionNeedsUpdate...",
-    "(3/5) Updating linux initcpios...",
-    ":: there is nothing to do",
-    "",
-    "roy-b@archlinux ~ $"
-  ],
-  [
-    "roy-b@archlinux ~ $ systemctl --user status pipewire wireplumber",
-    "● pipewire.service - Multimedia Service",
-    "     Loaded: loaded (/usr/lib/systemd/user/pipewire.service; enabled)",
-    "     Active: active (running) since Sun 2026-10-12 03:12:00 CEST",
-    "TriggeredBy: ● pipewire.socket",
-    "   Main PID: 1042 (pipewire)",
-    "      Tasks: 3 (limit: 18811)",
-    "     Memory: 11.7M",
-    "        CPU: 2.842s",
-    "",
-    "● wireplumber.service - Multimedia Service Session Manager",
-    "     Loaded: loaded (/usr/lib/systemd/user/wireplumber.service; enabled)",
-    "     Active: active (running) since Sun 2026-10-12 03:12:01 CEST",
-    "",
-    "roy-b@archlinux ~ $ wpctl status",
-    "PipeWire 'pipewire-0' [1.2.7, roy-b@archlinux, cookie:4819237]",
-    " ├─ Clients:",
-    " │      32. WirePlumber [1.2.7, roy-b@archlinux, pid:1051]",
-    " │      41. kitty [1.2.7, roy-b@archlinux, pid:2284]",
-    " ├─ Audio",
-    " │  ├─ Devices:",
-    " │  │      43. Built-in Audio Analog Stereo",
-    " │  └─ Sinks:",
-    " │         51. Built-in Audio Analog Stereo",
-    "",
-    "roy-b@archlinux ~ $"
-  ],
-  [
-    "roy-b@archlinux ~ $ find ~/Music -maxdepth 2 -type f | sort",
-    "/home/roy-b/Music/ambient/aftercache.flac",
-    "/home/roy-b/Music/ambient/window-rain.wav",
-    "/home/roy-b/Music/field-recordings/city-03-12.wav",
-    "/home/roy-b/Music/field-recordings/kitchen-2am.wav",
-    "/home/roy-b/Music/lofi/nocturne.wav",
-    "/home/roy-b/Music/lofi/static-memory.wav",
-    "/home/roy-b/Music/unfinished/blue-screen-demo.wav",
-    "/home/roy-b/Music/unfinished/late-night-loop.wav",
-    "",
-    "roy-b@archlinux ~ $ ffprobe -hide_banner ~/Music/lofi/nocturne.wav",
-    "Input #0, wav, from '/home/roy-b/Music/lofi/nocturne.wav':",
-    "  Duration: 00:03:42.04, bitrate: 1411 kb/s",
-    "  Stream #0:0: Audio: pcm_s16le, 44100 Hz, stereo, s16, 1411 kb/s",
-    "",
-    "roy-b@archlinux ~ $"
-  ],
-  [
-    "roy-b@archlinux ~ $ journalctl --user -b -u pipewire --no-pager | tail -n 14",
-    "oct 12 03:12:00 archlinux systemd[1012]: Started Multimedia Service.",
-    "oct 12 03:12:00 archlinux pipewire[1042]: mod.rt: RTKit found, using realtime scheduling.",
-    "oct 12 03:12:01 archlinux pipewire[1042]: spa.alsa: opened device hw:0",
-    "oct 12 03:12:01 archlinux wireplumber[1051]: <WpSiAudioAdapter> activated node 51",
-    "oct 12 03:18:44 archlinux pipewire[1042]: client 41 connected: kitty",
-    "oct 12 03:20:16 archlinux pipewire[1042]: client 58 connected: cmus",
-    "oct 12 03:21:07 archlinux wireplumber[1051]: configured default audio sink",
-    "",
-    "roy-b@archlinux ~ $ df -h /home",
-    "Filesystem      Size  Used Avail Use% Mounted on",
-    "/dev/nvme0n1p2  931G  218G  666G  25% /",
-    "",
-    "roy-b@archlinux ~ $ uptime",
-    " 03:12:00 up 4:21, 1 user, load average: 0.42, 0.38, 0.31",
-    "",
-    "roy-b@archlinux ~ $"
-  ],
-  [
-    "roy-b@archlinux ~ $ systemd-analyze",
-    "Startup finished in 3.847s (firmware) + 1.204s (loader) + 2.916s (kernel) + 5.432s (initrd) + 8.731s (userspace) = 22.130s",
-    "graphical.target reached after 8.514s in userspace.",
-    "",
-    "roy-b@archlinux ~ $ systemd-analyze blame | head -n 10",
-    "6.214s NetworkManager-wait-online.service",
-    "3.872s systemd-journald.service",
-    "2.916s systemd-udev-settle.service",
-    "2.104s ldconfig.service",
-    "1.842s systemd-random-seed.service",
-    "1.604s systemd-modules-load.service",
-    "1.287s systemd-tmpfiles-setup.service",
-    "1.104s systemd-sysctl.service",
-    "0.982s systemd-udevd.service",
-    "0.741s systemd-user-sessions.service",
-    "",
-    "roy-b@archlinux ~ $ systemd-analyze critical-chain graphical.target",
-    "The time when unit became active or started is printed after the '@' character.",
-    "The time the unit took to start is printed after the '+' character.",
-    "",
-    "graphical.target @8.514s",
-    "└─multi-user.target @8.509s",
-    "  └─getty@tty1.service @8.501s",
-    "    └─systemd-user-sessions.service @8.464s +36ms",
-    "      └─network.target @8.438s",
-    "        └─NetworkManager.service @6.872s +1.562s",
-    "",
-    "roy-b@archlinux ~ $"
-  ],
-  [
-    "roy-b@archlinux ~ $ ps -eo pid,user,comm,%cpu,%mem --sort=-%cpu | head -n 10",
-    "    PID USER     COMMAND         %CPU %MEM",
-    "   2284 roy-b    kitty            4.8  1.2",
-    "   1042 roy-b    pipewire         2.1  0.1",
-    "   1051 roy-b    wireplumber      1.4  0.2",
-    "   1876 roy-b    Hyprland         1.2  2.8",
-    "   2418 roy-b    firefox          0.9  6.4",
-    "   2633 roy-b    cmus             0.6  0.3",
-    "   1120 roy-b    dunst            0.2  0.1",
-    "   1298 roy-b    waybar           0.2  0.4",
-    "   1407 roy-b    swaybg           0.1  0.2",
-    "",
-    "roy-b@archlinux ~ $ pactl list sinks short",
-    "51\talsa_output.pci-0000_0a_00.6.analog-stereo\tPipeWire\tfloat32le-2ch-48000Hz\tRUNNING",
-    "",
-    "roy-b@archlinux ~ $ pactl get-sink-volume @DEFAULT_SINK@",
-    "Volume: front-left: 45875 /  70% / -8.91 dB,   front-right: 45875 /  70% / -8.91 dB",
-    "        balance 0.00",
-    "",
-    "roy-b@archlinux ~ $ pw-top",
-    "S   ID  PRI  CS  CL  WAV  W/S  F/S  DRP  ERR  ALSA  QUANT  ERR  FPS",
-    "*   51    0   0   0    0    0    0    0    0     0   1024    0  46.9",
-    "    41    0   0   0    0    0    0    0    0     0      0    0  0.0",
-    "*   58    0   0   0    0    0    0    0    0     0   1024    0  46.9",
-    "    32    0   0   0    0    0    0    0    0     0      0    0  0.0",
-    "",
-    "roy-b@archlinux ~ $"
-  ]
-];
-
-function renderTerminalLine(line) {
-  const safeLine = line
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;");
-
-  if (safeLine.includes("roy-b@archlinux")) {
-    return `<span class="prompt">${safeLine}</span>`;
-  }
-
-  if (safeLine.includes("Active: active")) {
-    return `<span class="success">${safeLine}</span>`;
-  }
-
-  return safeLine;
-}
-
-const terminalHost = document.getElementById("terminal-column-1");
-
-if (terminalHost) {
-  const allLines = archTerminalLines.flat();
-
-  const track = document.createElement("div");
-  track.className = "terminal-track";
-
-  const firstBlock = document.createElement("div");
-  firstBlock.className = "terminal-block";
-
-  track.appendChild(firstBlock);
-  terminalHost.replaceChildren(track);
-
-  function appendSequence() {
-    const fragment = document.createDocumentFragment();
-
-    allLines.forEach((line) => {
-      const row = document.createElement("div");
-      row.className = "terminal-row";
-      row.innerHTML = renderTerminalLine(line);
-      fragment.appendChild(row);
-    });
-
-    firstBlock.appendChild(fragment);
-  }
-
-  function buildInfiniteTerminal() {
-    track.style.animation = "none";
-    track.querySelectorAll(".terminal-block").forEach((block) => {
-      if (block !== firstBlock) {
-        block.remove();
-      }
-    });
-
-    firstBlock.replaceChildren();
-    appendSequence();
-
-    const minimumHeight = window.innerHeight + 200;
-
-    while (firstBlock.getBoundingClientRect().height < minimumHeight) {
-      appendSequence();
-    }
-
-    const secondBlock = firstBlock.cloneNode(true);
-    track.appendChild(secondBlock);
-
-    const blockHeight = firstBlock.getBoundingClientRect().height;
-    const pixelsPerSecond = 65;
-
-    track.style.setProperty(
-      "--terminal-duration",
-      `${blockHeight / pixelsPerSecond}s`
-    );
-
-    void track.offsetHeight;
-    track.style.animation = "";
-  }
-
-  const fontsReady = document.fonts
-    ? document.fonts.ready
-    : Promise.resolve();
-
-  fontsReady.then(buildInfiniteTerminal);
-
-  let resizeTimer;
-
-  window.addEventListener("resize", () => {
-    clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(buildInfiniteTerminal, 200);
-  });
-}
+const terminalLines = [
+  "roy-b@Cachy-Desktop ~ $ fastfetch --structure Title:OS:Kernel:Uptime:Packages:Shell:Display:DE:WM:Terminal:CPU:GPU:Memory:Swap:Disk:Locale",
+  "roy-b@Cachy-Desktop",
+  "--------------------",
+  "OS: CachyOS x86_64",
+  "Kernel: Linux 7.2.9-2-cachyos",
+  "Uptime: 2 hours, 37 mins",
+  "Packages: 1260 (pacman)",
+  "Shell: fish 4.9.3",
+  "Display (Odyssey G5): 2560x1440 in 27\", 165 Hz [External, HDR]",
+  "Desktop Environment: KDE Plasma 6.7.5",
+  "Window Manager: KWin (Wayland)",
+  "Terminal: konsole 26.8.2",
+  "CPU: AMD Ryzen 7 5800X (16) @ 4.85 GHz",
+  "GPU: NVIDIA GeForce RTX 3060 Lite Hash Rate [Discrete]",
+  "Memory: 5.10 GiB / 31.25 GiB (16%)",
+  "Swap: 3.19 MiB / 31.24 GiB (0%)",
+  "Disk (/): 29.43 GiB / 931.01 GiB (3%) - btrfs",
+  "Disk (/mnt/dati): 1.38 TiB / 1.82 TiB (76%) - fuseblk",
+  "Disk (/mnt/windows): 563.46 GiB / 1.82 TiB (30%) - fuseblk",
+  "Disk (/run/media/roy-b/E839-9AB4): 768.00 KiB / 117.18 GiB (0%) - exfat [External]",
+  "Local IP (enp10s0): 192.168.50.42/24",
+  "Locale: it_IT.UTF-8",
+  "",
+  "roy-b@Cachy-Desktop ~ $ inxi -Fxxxz --no-host --filter --width 180",
+  "System: Kernel: 7.2.9-2-cachyos arch: x86_64 bits: 64 compiler: gcc v: 15.1.1 clocksource: tsc",
+  "Desktop: KDE Plasma v: 6.7.5 tk: Qt v: 6.8.2 wm: kwin_wayland vt: 2 dm: SDDM v: 0.21.0",
+  "Machine: Type: Desktop System: Custom build product: Cachy-Desktop v: 1.0",
+  "CPU: Info: 8-core model: AMD Ryzen 7 5800X bits: 64 type: MT MCP smt: enabled cache: L2: 4 MiB L3: 32 MiB",
+  "Speed (MHz): avg: 4850 min/max: 2200/4850 cores: 1:4850 2:4850 3:4850 4:4850 5:4850 6:4850 7:4850 8:4850",
+  "Graphics: Device-1: NVIDIA GA106 [GeForce RTX 3060 Lite Hash Rate] driver: nvidia v: 575.64.03",
+  "Display: wayland server: X.org v: 1.21.1.16 with: Xwayland v: 24.1.6 compositor: kwin_wayland driver: gpu: nvidia",
+  "Monitor-1: DP-1 model: Samsung Odyssey G5 res: 2560x1440 hz: 165 dpi: 109 size: 597x336mm diag: 685mm (27.0\")",
+  "Audio: Device-1: NVIDIA GA106 High Definition Audio driver: snd_hda_intel",
+  "Network: Device-1: Realtek RTL8125 2.5GbE driver: r8169 if: enp10s0 state: up speed: 1000 Mbps duplex: full",
+  "",
+  "roy-b@Cachy-Desktop ~ $ sudo pacman -Syu",
+  ":: Synchronizing package databases...",
+  " cachyos-v3 downloading...                    100%  138.7 KiB  1.23 MiB/s 00:00",
+  " core downloading...                          100%  119.4 KiB  1.09 MiB/s 00:00",
+  " extra downloading...                         100%    8.0
