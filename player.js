@@ -565,10 +565,10 @@ function scheduleTerminalGlitch() {
     return;
   }
 
-  const delay = 7000 + Math.random() * 9000;
+  const delay = 1800 + Math.random() * 3200;
   window.setTimeout(triggerTerminalGlitch, delay);
 }
 
 if (!prefersReducedMotion.matches) {
-  scheduleTerminalGlitch();
+  triggerTerminalGlitch();
 }
