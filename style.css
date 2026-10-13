@@ -874,3 +874,27 @@ input[type="range"]::-moz-range-thumb {
     transform: none;
   }
 }
+
+/* Centra il blocco terminale mantenendo le righe allineate a sinistra */
+
+.terminal-grid {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+}
+
+.terminal-grid #terminal-column-1 {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: min(92vw, 80ch);
+  margin: 0;
+  padding: 0;
+  transform: translateX(-50%);
+  font-family: "Courier New", Courier, monospace;
+  text-align: left;
+}
