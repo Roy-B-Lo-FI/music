@@ -1371,4 +1371,20 @@ input[type="range"]::-moz-range-thumb {
   }
 
   66% {
-    opacity:
+    opacity: 0.8;
+    transform: translate3d(-8px, 2px, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .terminal-bg.is-glitching,
+  .terminal-bg.is-glitching::after {
+    animation: none !important;
+    transform: none !important;
+    filter: none !important;
+  }
+
+  .terminal-bg.is-glitching::after {
+    display: none;
+  }
+}
