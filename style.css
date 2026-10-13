@@ -2184,3 +2184,20 @@ input[type="range"]:focus-visible {
     transform: none;
   }
 }
+
+/* Sezione descrittiva ROY-B centrata */
+
+.about-grid.about-grid-centered {
+  display: flex;
+  justify-content: center;
+}
+
+.about-grid.about-grid-centered .about-copy {
+  width: 100%;
+  max-width: 680px;
+  text-align: center;
+}
+
+.about-grid.about-grid-centered .about-copy .btn {
+  margin-top: 12px;
+}
