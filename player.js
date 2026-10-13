@@ -348,20 +348,20 @@ const terminalLines = [
   "/dev/nvme0n1p2                     btrfs    932G   30G  902G   3% /",
   "/dev/sda                            fuseblk  1.9T  1.4T  455G  76% /mnt/dati",
   "/dev/sdb                            fuseblk  1.9T  564G  1.3T  30% /mnt/windows",
-  "/dev/sdc                            exfat    118G  768K  118G   1% /run/media/roy-b/E839-9AB4",
+  "/dev/sdc                        117.2G exfat        E839-9AB4  /run/media/roy-b/E839-9AB4       USB Flash Drive",
   "",
   "roy-b@Cachy-Desktop ~ $ ip -br address show enp10s0 && nmcli -f GENERAL,IP4,DHCP4 device show enp10s0",
   "enp10s0          UP             192.168.50.42/24 fe80::a00:27ff:fe4e:66a1/64",
   "GENERAL.DEVICE:                         enp10s0",
-  "GENERAL.TYPE:                           ethernet",
+  "GENERAL.TYPE:                         ethernet",
   "GENERAL.HWADDR:                         00:1A:2B:3C:4D:5E",
-  "GENERAL.MTU:                            1500",
-  "GENERAL.STATE:                          100 (connected)",
+  "GENERAL.MTU:                           1500",
+  "GENERAL.STATE:                         100 (connected)",
   "GENERAL.CONNECTION:                     Wired connection 1",
   "IP4.ADDRESS[1]:                         192.168.50.42/24",
   "IP4.GATEWAY:                            192.168.50.1",
   "IP4.ROUTE[1]:                           dst = 0.0.0.0/0, nh = 192.168.50.1, mt = 100",
-  "DHCP4.OPTION[1]:                        domain_name_servers = 192.168.50.1",
+  "DHCP4.OPTION[1]:                         domain_name_servers = 192.168.50.1",
   "",
   "roy-b@Cachy-Desktop ~ $ sensors | grep -E 'Tctl|Tdie|Package id 0|edge|fan1' | head -n 8",
   "Tctl:         +52.5°C  (high = +95.0°C, hyst = +90.0°C)",
@@ -376,10 +376,10 @@ const terminalLines = [
   "   1854 roy-b    pipewire         2.1  0.1   17432  373104",
   "   2430 roy-b    kwin_wayland     1.7  1.3  425612 3489916",
   "   3851 roy-b    firefox          1.4  4.8 1564148 8295132",
-  "   2764 roy-b    plasmashell      0.9  1.0  321764 2471096",
-  "   2673 roy-b    Xwayland         0.4  0.2   67424 1132020",
-  "   2514 roy-b    kded6            0.2  0.1   30316  493828",
-  "   2728 roy-b    polkit-kde-auth  0.1  0.1   18504  426136",
+  "   2764 roy-b    plasmashell      0.9  1.0  321764 321764",
+  "   2673 roy-b    Xwayland         0.4  0.2   67424 67424",
+  "   2514 roy-b    kded6            0.2  0.1   30316 30316",
+  "   2728 roy-b    polkit-kde-auth  0.1  0.1   30316 30316",
   "",
   "roy-b@Cachy-Desktop ~ $ nvidia-smi --query-gpu=name,driver_version,temperature.gpu,utilization.gpu,memory.used,memory.total,power.draw --format=csv",
   "name, driver_version, temperature.gpu, utilization.gpu [%], memory.used [MiB], memory.total [MiB], power.draw [W]",
@@ -521,41 +521,50 @@ function triggerTerminalGlitch() {
     return;
   }
 
+  const background = terminalHost.closest(".terminal-bg");
+
   const rows = [...terminalHost.querySelectorAll(".terminal-row")].filter(
     (row) => row.textContent.trim().length > 8
   );
 
-  if (!rows.length) {
-    scheduleTerminalGlitch();
-    return;
+  if (background) {
+    background.classList.add("is-glitching");
   }
 
-  const rowCount = Math.min(
-    rows.length,
-    Math.floor(Math.random() * 4) + 2
-  );
+  if (rows.length) {
+    const rowCount = Math.min(
+      rows.length,
+      Math.floor(Math.random() * 4) + 2
+    );
 
-  const selectedRows = [...rows]
-    .sort(() => Math.random() - 0.5)
-    .slice(0, rowCount);
+    const selectedRows = [...rows]
+      .sort(() => Math.random() - 0.5)
+      .slice(0, rowCount);
 
-  selectedRows.forEach((row) => {
-    const originalMarkup = row.innerHTML;
-    const originalText = row.textContent;
+    selectedRows.forEach((row) => {
+      const originalMarkup = row.innerHTML;
+      const originalText = row.textContent;
 
-    row.dataset.glitchOriginal = originalMarkup;
-    row.classList.add("is-glitching");
+      row.dataset.glitchOriginal = originalMarkup;
+      row.classList.add("is-glitching");
 
-    if (Math.random() > 0.35) {
-      row.textContent = scrambleTerminalText(originalText);
+      if (Math.random() > 0.35) {
+        row.textContent = scrambleTerminalText(originalText);
+      }
+
+      window.setTimeout(() => {
+        row.innerHTML = row.dataset.glitchOriginal || originalMarkup;
+        delete row.dataset.glitchOriginal;
+        row.classList.remove("is-glitching");
+      }, 180 + Math.random() * 360);
+    });
+  }
+
+  window.setTimeout(() => {
+    if (background) {
+      background.classList.remove("is-glitching");
     }
-
-    window.setTimeout(() => {
-      row.innerHTML = row.dataset.glitchOriginal || originalMarkup;
-      delete row.dataset.glitchOriginal;
-      row.classList.remove("is-glitching");
-    }, 180 + Math.random() * 360);
-  });
+  }, 320 + Math.random() * 280);
 
   scheduleTerminalGlitch();
 }
