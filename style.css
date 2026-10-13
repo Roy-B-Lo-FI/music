@@ -826,12 +826,13 @@ input[type="range"]::-moz-range-thumb {
 .terminal-grid #terminal-column-1 {
   display: block;
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 50%;
   width: min(94vw, 1500px);
-  height: auto;
+  height: 100vh;
   min-height: 0;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
+  overflow: hidden;
   white-space: normal;
   font-size: clamp(0.85rem, 1.35vw, 1.3rem);
   line-height: 1.65;
@@ -889,12 +890,14 @@ input[type="range"]::-moz-range-thumb {
 
 .terminal-grid #terminal-column-1 {
   position: absolute;
-  top: 0;
+  top: 50%;
   left: 50%;
   width: min(92vw, 118ch);
+  height: 100vh;
   margin: 0;
   padding: 0;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
+  overflow: hidden;
   font-family: "Courier New", Courier, monospace;
   text-align: left;
 }
